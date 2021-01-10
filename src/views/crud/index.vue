@@ -1,32 +1,14 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" :placeholder="$t('table.title')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.importance" :placeholder="$t('table.importance')" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
-      </el-select>
-      <el-select v-model="listQuery.type" :placeholder="$t('table.type')" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
-      </el-select>
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
-      </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        {{ $t('table.search') }}
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        {{ $t('table.add') }}
-      </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        {{ $t('table.export') }}
-      </el-button>
+      
 
     </div>
 
     <el-table
       :key="tableKey"
       v-loading="listLoading"
-      :data="list.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+      :data="list.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()) || data.roles.toLowerCase().includes(search.toLowerCase()))"
       border
       fit
       highlight-current-row
@@ -63,7 +45,9 @@
 
       <el-table-column :label="$t('table.roles')" prop="roles" width="auto" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.roles }}</span>
+          
+          <span v-if="scope.row.roles === 'sadmin'">Senior Account</span>
+          <span v-else-if="scope.row.roles === 'normalUser'">Junior Account</span>
         </template>
       </el-table-column>
 
@@ -89,26 +73,11 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="auto" style="width: auto;">
 
-        <pan-thumb :image="image" />
+        
 
-        <el-button type="primary" icon="upload" @click="imagecropperShow=true">
-          Change Avatar
-        </el-button>
-
-        <image-cropper
-          v-show="imagecropperShow"
-          :key="imagecropperKey"
-          :width="auto"
-          :height="auto"
-          url="https://httpbin.org/post"
-          lang-type="en"
-          @close="close"
-          @crop-upload-success="cropSuccess"
-        />
-
-        <el-form-item :label="$t('table.id')" prop="id">
+        <!-- <el-form-item :label="$t('table.id')" prop="id">
           <el-input v-model="temp.id" />
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item :label="$t('table.name')" prop="name">
           <el-input v-model="temp.name" />
@@ -118,9 +87,26 @@
           <el-input v-model="temp.email" />
         </el-form-item>
 
-        <el-form-item :label="$t('table.roles')" prop="roles">
+        <!-- <el-form-item :label="$t('table.roles')" prop="roles">
           <el-input v-model="temp.roles" />
+        </el-form-item> -->
+
+        <el-form-item label="Role" prop="roles">
+          <template>
+            <el-select v-model="temp.roles" clearable placeholder="Select Role">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </template>
         </el-form-item>
+
+        <!-- <el-form-item :label="$t('table.password')" prop="password">
+          <el-input v-model="temp.password" />
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -215,6 +201,13 @@ export default {
     return {
       imagecropperShow: false,
       imagecropperKey: 0,
+      options: [{
+          value: 'sadmin',
+          label: 'Senior Account'
+        }, {
+          value: 'normalUser',
+          label: 'Junior Account'
+      }],
       image: 'https://wpimg.wallstcn.com/577965b9-bb9e-4e02-9f0c-095b41417191',
       tableKey: 0,
       search: '',
@@ -262,9 +255,18 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        // type: [{ required: true, message: 'type is required', trigger: 'change' }],
+        // timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
+        // title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        name: [
+        { required: true, message: 'Please input the Date', trigger: 'blur' },
+        ],
+        email: [
+        { required: true, message: 'Please input the Date', trigger: 'blur' },
+        ],
+        roles: [
+        { required: true, message: 'Please input the Date', trigger: 'blur' },
+        ]
       },
       downloadLoading: false
     }
@@ -472,8 +474,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+        const tHeader = ['Name', 'Email', 'Roles']
+        const filterVal = ['name', 'email', 'roles']
         const data = this.formatJson(filterVal, this.list)
         excel.export_json_to_excel({
           header: tHeader,
