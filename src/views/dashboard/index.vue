@@ -26,9 +26,9 @@ export default {
   },
   created() {
     if (this.roles.includes('sadmin')) {
-      this.currentRole = 'school_dashboard'
+      this.currentRole = 'adminDashboard'
     }else if (this.roles.includes('normalUser')){
-      this.currentRole = 'student_dashboard'
+      this.currentRole = 'editorDashboard'
     }
   }
 }
