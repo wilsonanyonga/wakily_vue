@@ -9,34 +9,47 @@
     <el-row :gutter="24">
       <el-col :xs="1" :sm="3" :md="10" :lg="8" :xl="8"></el-col>
       <el-col :xs="22" :sm="18" :md="4" :lg="8" :xl="8">
-    <p>this is the create page</p>
-    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="auto" class="demo-ruleForm">
+        <p>Create A New User</p>
+        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="auto" class="demo-ruleForm">
 
-      <el-form-item label="Name" prop="name">
-        <el-input type="text" v-model="ruleForm.name" autocomplete="off"></el-input>
-      </el-form-item>
+          <el-form-item label="Name" prop="name">
+            <el-input @keydown.space="(event) => event.preventDefault()" type="text" v-model="ruleForm.name" autocomplete="off"></el-input>
+          </el-form-item>
 
-      <el-form-item label="Email" prop="email">
-        <el-input type="email" v-model="ruleForm.email" autocomplete="off"></el-input>
-      </el-form-item>
+          <el-form-item label="Email" prop="email">
+            <el-input type="email" v-model="ruleForm.email" autocomplete="off"></el-input>
+          </el-form-item>
 
-      <el-form-item label="Password" prop="pass">
-        <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
-      </el-form-item>
-      <!-- <el-form-item label="Confirm" prop="checkPass">
-        <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
-      </el-form-item> -->
-      <el-form-item label="Role" prop="roles">
-        <el-input type="text" v-model="ruleForm.roles" autocomplete="off"></el-input>
-      </el-form-item>
+          <el-form-item label="Password" prop="pass">
+            <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="Confirm" prop="checkPass">
+            <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+          </el-form-item>
+          <!-- <el-form-item label="Role" prop="roles">
+            <el-input type="text" v-model="ruleForm.roles" autocomplete="off"></el-input>
+          </el-form-item> -->
 
-    <el-form-item>
-      <el-button :loading="loading" type="primary" @click="submitForm('ruleForm')">Submit</el-button>
-      <el-button @click="resetForm('ruleForm')">Reset</el-button>
-    </el-form-item>
-  </el-form>
-  </el-col>
-  <el-col :xs="1" :sm="3" :md="10" :lg="8" :xl="8"></el-col>
+          <el-form-item label="Role" prop="roles">
+            <template>
+              <el-select v-model="ruleForm.roles" clearable placeholder="Select Role">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </template>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button :loading="loading" type="primary" @click="submitForm('ruleForm')">Submit</el-button>
+            <el-button @click="resetForm('ruleForm')">Reset</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <el-col :xs="1" :sm="3" :md="10" :lg="8" :xl="8"></el-col>
   </el-row>
   </div>
 </template>
@@ -113,6 +126,13 @@ export default {
           age: ''
         },
         loading: false,
+        options: [{
+          value: 'sadmin',
+          label: 'Senior Account'
+        }, {
+          value: 'normalUser',
+          label: 'Junior Account'
+        }],
         rules: {
           name: [
             { validator: validateName, trigger: 'blur', required: true }
@@ -125,10 +145,10 @@ export default {
             { validator: validateRole, trigger: 'blur', required: true }
           ],
           pass: [
-            { validator: validatePass, trigger: 'blur' }
+            { validator: validatePass, trigger: 'blur', required: true }
           ],
           checkPass: [
-            { validator: validatePass2, trigger: 'blur' }
+            { validator: validatePass2, trigger: 'blur', required: true }
           ],
           age: [
             { validator: checkAge, trigger: 'blur' }
@@ -171,7 +191,7 @@ export default {
               this.$store.dispatch('user/inputData', this.ruleForm)
               // const data = inputData(this.$refs[ruleForm])
               .then(() => {
-                this.$router.push({ path: this.redirect || '/create/create' })
+                this.$router.push({ path: this.redirect || '/create' })
                 this.$message({
                 showClose: true,
                 message: 'The user has been added.',
