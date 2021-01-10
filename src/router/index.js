@@ -72,33 +72,22 @@ export const constantRoutes = [{
             import ('@/views/error-page/401'),
         hidden: true
     },
-    // {
-    //     path: '',
-    //     component: Layout,
-    //     redirect: 'dashboard',
-    //     children: [{
-    //         path: 'dashboard',
-    //         component: () =>
-    //             import ('@/views/dashboard/index'),
-    //         name: 'Dashboard',
-    //         meta: { title: 'dashboard', icon: 'dashboard', affix: true }
-    //     }]
-    // },
+    {
+        path: '',
+        component: Layout,
+        redirect: 'dashboard',
+        children: [{
+            path: 'dashboard',
+            component: () =>
+                import ('@/views/dashboard/index'),
+            name: 'Dashboard',
+            meta: { title: 'dashboard', icon: 'dashboard', affix: true }
+        }]
+    },
 
 
 
-    // {
-    //     path: '/crud',
-    //     component: Layout,
-    //     redirect: 'crud',
-    //     children: [{
-    //         path: 'crud',
-    //         component: () =>
-    //             import ('@/views/crud/index'),
-    //         name: 'Crud',
-    //         meta: { title: 'crud', icon: 'edit', affix: false }
-    //     }]
-    // },
+    
 
     // {
     //     path: '/documentation',
@@ -143,327 +132,431 @@ export const constantRoutes = [{
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
+    {
+        path: '/permission',
+        component: Layout,
+        redirect: '/permission/page',
+        alwaysShow: true, // will always show the root menu
+        name: 'Permission',
+        meta: {
+            title: 'permission',
+            icon: 'lock',
+            roles: ['admin', 'editor'] // you can set roles in root nav
+        },
+        children: [{
+                path: 'page',
+                component: () =>
+                    import ('@/views/permission/page'),
+                name: 'PagePermission',
+                meta: {
+                    title: 'pagePermission',
+                    roles: ['admin'] // or you can only set roles in sub nav
+                }
+            },
+            {
+                path: 'directive',
+                component: () =>
+                    import ('@/views/permission/directive'),
+                name: 'DirectivePermission',
+                meta: {
+                    title: 'directivePermission'
+                        // if do not set roles, means: this page does not require permission
+                }
+            },
+            {
+                path: 'role',
+                component: () =>
+                    import ('@/views/permission/role'),
+                name: 'RolePermission',
+                meta: {
+                    title: 'rolePermission',
+                    roles: ['admin']
+                }
+            }
+        ]
+    },
+
+    {
+        path: '/clients',
+        component: Layout,
+        redirect: '/clients/clients',
+        children: [{
+                path: 'clients',
+                component: () =>
+                    import ('@/views/clients/index'),
+                name: 'Clients',
+                meta: { 
+                    title: 'Clients', 
+                    icon: 'edit', 
+                    affix: false,
+                    roles: ['sadmin', 'editor'] // you can set roles in root nav
+                }
+            },
+            {
+                path: 'details/:id(\\d+)',
+                component: () =>
+                    import ('@/views/clients/details'),
+                name: 'EditArticle',
+                meta: { 
+                    title: 'Client Details', 
+                    noCache: true, 
+                    activeMenu: '/clients/clients',
+                    roles: ['sadmin', 'editor']
+                },
+                hidden: true
+            },
+            {
+                path: 'tasks/:id(\\d+)',
+                component: () =>
+                    import ('@/views/clients/tasks'),
+                name: 'EditArticle',
+                meta: { 
+                    title: 'Matter Details', 
+                    noCache: true, 
+                    activeMenu: '/clients/clients',
+                    roles: ['sadmin', 'editor']
+                },
+                hidden: true
+            }
+        ]
+    },
+
+    {
+        path: 'http://localhost:5000/api/download/:file_name(\\d+)',
+        component: Layout,
+        redirect: 'crud',
+        
+        hidden: true
+    },
+
+    {
+        path: '/matt',
+        component: Layout,
+        redirect: 'crud',
+        children: [{
+            path: 'crud',
+            component: () =>
+                import ('@/views/mat/matter'),
+            name: 'Crud',
+            meta: { title: 'Matters', icon: 'edit', affix: false, roles: ['sadmin', 'editor'] }
+        }]
+    },
+
+    {
+        path: '/my_tasks',
+        component: Layout,
+        redirect: 'my_tasks',
+        children: [{
+            path: 'my_tasks',
+            component: () =>
+                import ('@/views/my_tasks/index'),
+            name: 'My Tasks',
+            meta: { title: 'My Tasks', icon: 'edit', affix: false, roles: ['sadmin', 'editor'] }
+        }]
+    },
+
+    {
+        path: '/create',
+        component: Layout,
+        redirect: '/create/page1',
+        name: 'Permission',
+        meta: {
+            title: 'Settings',
+            icon: 'bug',
+            roles: ['sadmin', 'editor'] // you can set roles in root nav
+        },
+        children: [{
+                path: 'page1',
+                component: () =>
+                    import ('@/views/create/index'),
+                name: 'Create',
+                meta: {
+                    title: 'Add User',
+                    icon: 'edit',
+                    affix: false,
+                    roles: ['sadmin', 'editor']
+                }
+            },
+            {
+                path: 'role',
+                component: () =>
+                    import ('@/views/permission/role'),
+                name: 'RolePermission',
+                meta: {
+                    title: 'rolePermission',
+                    roles: ['admin']
+                }
+            },
+            {
+                path: 'crud',
+                component: () =>
+                    import ('@/views/crud/index'),
+                name: 'Crud',
+                meta: { 
+                    title: 'Edit Users', 
+                    icon: 'edit', 
+                    affix: false, 
+                    roles: ['sadmin', 'editor'] 
+                }
+            }
+        ]
+    },
+
     // {
-    //     path: '/permission',
+    //     path: '/crud',
     //     component: Layout,
-    //     redirect: '/permission/page',
-    //     alwaysShow: true, // will always show the root menu
-    //     name: 'Permission',
+    //     redirect: 'crud',
+    //     children: [{
+    //         path: 'crud',
+    //         component: () =>
+    //             import ('@/views/crud/index'),
+    //         name: 'Crud',
+    //         meta: { title: 'crud', icon: 'edit', affix: false, roles: ['sadmin', 'editor'] }
+    //     }]
+    // },
+    // {
+    //     path: '',
+    //     component: Layout,
+    //     redirect: 'dashboard',
     //     meta: {
-    //         title: 'permission',
-    //         icon: 'lock',
-    //         roles: ['admin', 'editor'] // you can set roles in root nav
+    //         title: 'Dashboard',
+    //         icon: 'dashboard'
     //     },
     //     children: [{
-    //             path: 'page',
+    //             path: 'dashboard',
     //             component: () =>
-    //                 import ('@/views/permission/page'),
-    //             name: 'PagePermission',
-    //             meta: {
-    //                 title: 'pagePermission',
-    //                 roles: ['admin'] // or you can only set roles in sub nav
-    //             }
+    //                 import ('@/views/dashboard/index'),
+    //             name: 'Overview',
+    //             meta: { title: 'Overview', icon: 'dashboard', affix: true }
     //         },
     //         {
-    //             path: 'directive',
+    //             path: 'form_4',
     //             component: () =>
-    //                 import ('@/views/permission/directive'),
-    //             name: 'DirectivePermission',
+    //                 import ('@/views/school_dashboard/form_4'),
+    //             name: 'Form 4',
     //             meta: {
-    //                 title: 'directivePermission'
-    //                     // if do not set roles, means: this page does not require permission
-    //             }
+    //                 title: 'Form 4',
+    //                 icon: 'education',
+    //                 roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //             },
+
     //         },
     //         {
-    //             path: 'role',
+    //             path: 'form_3',
     //             component: () =>
-    //                 import ('@/views/permission/role'),
-    //             name: 'RolePermission',
+    //                 import ('@/views/school_dashboard/form_3'),
+    //             name: 'Form 3',
     //             meta: {
-    //                 title: 'rolePermission',
-    //                 roles: ['admin']
-    //             }
+    //                 title: 'Form 3',
+    //                 icon: 'education',
+    //                 roles: ['sadmin', 'normalUser'] // you can set roles in root nav
+    //             },
+
+    //         },
+    //         {
+    //             path: 'form_2',
+    //             component: () =>
+    //                 import ('@/views/school_dashboard/form_2'),
+    //             name: 'Form 2',
+    //             meta: {
+    //                 title: 'Form 2',
+    //                 icon: 'education',
+    //                 roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //             },
+
+    //         },
+    //         {
+    //             path: 'form_1',
+    //             component: () =>
+    //                 import ('@/views/school_dashboard/form_1'),
+    //             name: 'Form 1',
+    //             meta: {
+    //                 title: 'Form 1',
+    //                 icon: 'education',
+    //                 roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //             },
+
     //         }
     //     ]
     // },
 
     // {
-    //     path: '/create',
+    //     path: '/examResults',
     //     component: Layout,
-    //     redirect: '/create/page1',
-    //     name: 'Permission',
+    //     // redirect: '/school_dashboard/form_4',
     //     meta: {
-    //         title: 'Create',
-    //         icon: 'lock',
-    //         roles: ['admin', 'editor'] // you can set roles in root nav
+    //         title: 'Exam Results',
+    //         icon: 'edit',
+    //         roles: ['sadmin', 'editor'] // you can set roles in root nav
     //     },
     //     children: [{
-    //             path: 'page1',
+    //             path: 'editResults',
     //             component: () =>
-    //                 import ('@/views/create/index'),
-    //             name: 'Create',
+    //                 import ('@/views/results/editResults'),
+    //             name: 'editResults',
     //             meta: {
-    //                 title: 'create',
-    //                 icon: 'edit',
-    //                 affix: false,
-    //                 roles: ['sadmin', 'editor']
-    //             }
+    //                 title: 'Edit Results',
+    //                 icon: 'form',
+    //                 roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //             },
+
     //         },
     //         {
-    //             path: 'role',
+    //             path: 'uploadResults',
     //             component: () =>
-    //                 import ('@/views/permission/role'),
-    //             name: 'RolePermission',
+    //                 import ('@/views/results/uploadResults'),
+    //             name: 'uploadResults',
     //             meta: {
-    //                 title: 'rolePermission',
-    //                 roles: ['admin']
-    //             }
+    //                 title: 'Upload Results',
+    //                 icon: 'excel',
+    //                 roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //             },
+
     //         }
     //     ]
     // },
-    {
-        path: '',
-        component: Layout,
-        redirect: 'dashboard',
-        meta: {
-            title: 'Dashboard',
-            icon: 'dashboard'
-        },
-        children: [{
-                path: 'dashboard',
-                component: () =>
-                    import ('@/views/dashboard/index'),
-                name: 'Overview',
-                meta: { title: 'Overview', icon: 'dashboard', affix: true }
-            },
-            {
-                path: 'form_4',
-                component: () =>
-                    import ('@/views/school_dashboard/form_4'),
-                name: 'Form 4',
-                meta: {
-                    title: 'Form 4',
-                    icon: 'education',
-                    roles: ['sadmin', 'editor'] // you can set roles in root nav
-                },
 
-            },
-            {
-                path: 'form_3',
-                component: () =>
-                    import ('@/views/school_dashboard/form_3'),
-                name: 'Form 3',
-                meta: {
-                    title: 'Form 3',
-                    icon: 'education',
-                    roles: ['sadmin', 'normalUser'] // you can set roles in root nav
-                },
+    // {
+    //     path: '/classList',
+    //     component: Layout,
+    //     // redirect: '/school_dashboard/form_4',
+    //     meta: {
+    //         title: 'Class List',
+    //         icon: 'edit',
+    //         roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //     },
+    //     children: [{
+    //             path: 'editList',
+    //             component: () =>
+    //                 import ('@/views/classList/editList'),
+    //             name: 'editList',
+    //             meta: {
+    //                 title: 'Edit Student Details',
+    //                 icon: 'form',
+    //                 roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //             },
 
-            },
-            {
-                path: 'form_2',
-                component: () =>
-                    import ('@/views/school_dashboard/form_2'),
-                name: 'Form 2',
-                meta: {
-                    title: 'Form 2',
-                    icon: 'education',
-                    roles: ['sadmin', 'editor'] // you can set roles in root nav
-                },
+    //         },
+    //         {
+    //             path: 'uploadlist',
+    //             component: () =>
+    //                 import ('@/views/classList/uploadList'),
+    //             name: 'uploadList',
+    //             meta: {
+    //                 title: 'Upload Class List',
+    //                 icon: 'excel',
+    //                 roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //             },
 
-            },
-            {
-                path: 'form_1',
-                component: () =>
-                    import ('@/views/school_dashboard/form_1'),
-                name: 'Form 1',
-                meta: {
-                    title: 'Form 1',
-                    icon: 'education',
-                    roles: ['sadmin', 'editor'] // you can set roles in root nav
-                },
+    //         }
+    //     ]
+    // },
 
-            }
-        ]
-    },
+    // {
+    //     path: '/textMessage',
+    //     component: Layout,
+    //     // redirect: '/school_dashboard/form_4',
+    //     meta: {
+    //         title: 'Send Messages',
+    //         icon: 'guide',
+    //         roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //     },
+    //     children: [{
+    //             path: 'generalMessage',
+    //             component: () =>
+    //                 import ('@/views/messages/generalMessage'),
+    //             name: 'generalMessage',
+    //             meta: {
+    //                 title: 'Send Message',
+    //                 icon: 'guide',
+    //                 roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //             },
 
-    {
-        path: '/examResults',
-        component: Layout,
-        // redirect: '/school_dashboard/form_4',
-        meta: {
-            title: 'Exam Results',
-            icon: 'edit',
-            roles: ['sadmin', 'editor'] // you can set roles in root nav
-        },
-        children: [{
-                path: 'editResults',
-                component: () =>
-                    import ('@/views/results/editResults'),
-                name: 'editResults',
-                meta: {
-                    title: 'Edit Results',
-                    icon: 'form',
-                    roles: ['sadmin', 'editor'] // you can set roles in root nav
-                },
+    //         },
+    //         {
+    //             path: 'resultsMessage',
+    //             component: () =>
+    //                 import ('@/views/messages/resultsMessage'),
+    //             name: 'resultsMessage',
+    //             meta: {
+    //                 title: 'Send Resuts',
+    //                 icon: 'guide',
+    //                 roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //             },
 
-            },
-            {
-                path: 'uploadResults',
-                component: () =>
-                    import ('@/views/results/uploadResults'),
-                name: 'uploadResults',
-                meta: {
-                    title: 'Upload Results',
-                    icon: 'excel',
-                    roles: ['sadmin', 'editor'] // you can set roles in root nav
-                },
+    //         }
+    //     ]
+    // },
 
-            }
-        ]
-    },
+    // {
+    //     path: '/printReport',
+    //     component: Layout,
+    //     // redirect: '/school_dashboard/form_4',
+    //     meta: {
+    //         title: 'Print Report Cards',
+    //         icon: 'clipboard',
+    //         roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //     },
+    //     children: [{
+    //             path: 'multipleReport',
+    //             component: () =>
+    //                 import ('@/views/reportCard/multipleReport'),
+    //             name: 'multipleReport',
+    //             meta: {
+    //                 title: 'Class Report Cards',
+    //                 icon: 'clipboard',
+    //                 roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //             },
 
-    {
-        path: '/classList',
-        component: Layout,
-        // redirect: '/school_dashboard/form_4',
-        meta: {
-            title: 'Class List',
-            icon: 'edit',
-            roles: ['sadmin', 'editor'] // you can set roles in root nav
-        },
-        children: [{
-                path: 'editList',
-                component: () =>
-                    import ('@/views/classList/editList'),
-                name: 'editList',
-                meta: {
-                    title: 'Edit Student Details',
-                    icon: 'form',
-                    roles: ['sadmin', 'editor'] // you can set roles in root nav
-                },
+    //         },
+    //         {
+    //             path: 'singleReport',
+    //             component: () =>
+    //                 import ('@/views/reportCard/singleReport'),
+    //             name: 'singleReport',
+    //             meta: {
+    //                 title: 'Individual Report Card',
+    //                 icon: 'clipboard',
+    //                 roles: ['sadmin', 'editor'] // you can set roles in root nav
+    //             },
 
-            },
-            {
-                path: 'uploadlist',
-                component: () =>
-                    import ('@/views/classList/uploadList'),
-                name: 'uploadList',
-                meta: {
-                    title: 'Upload Class List',
-                    icon: 'excel',
-                    roles: ['sadmin', 'editor'] // you can set roles in root nav
-                },
+    //         }
+    //     ]
+    // },
 
-            }
-        ]
-    },
+    // {
+    //     path: '/mpesa',
+    //     component: Layout,
+    //     redirect: 'mpesa',
+    //     children: [{
+    //         path: 'mpesa',
+    //         component: () =>
+    //             import ('@/views/payments/mpesa'),
+    //         name: 'mpesa',
+    //         meta: {
+    //             title: 'Pay For Text',
+    //             icon: 'money',
+    //             roles: ['sadmin', 'editor']
+    //         }
+    //     }]
+    // },
 
-    {
-        path: '/textMessage',
-        component: Layout,
-        // redirect: '/school_dashboard/form_4',
-        meta: {
-            title: 'Send Messages',
-            icon: 'guide',
-            roles: ['sadmin', 'editor'] // you can set roles in root nav
-        },
-        children: [{
-                path: 'generalMessage',
-                component: () =>
-                    import ('@/views/messages/generalMessage'),
-                name: 'generalMessage',
-                meta: {
-                    title: 'Send Message',
-                    icon: 'guide',
-                    roles: ['sadmin', 'editor'] // you can set roles in root nav
-                },
-
-            },
-            {
-                path: 'resultsMessage',
-                component: () =>
-                    import ('@/views/messages/resultsMessage'),
-                name: 'resultsMessage',
-                meta: {
-                    title: 'Send Resuts',
-                    icon: 'guide',
-                    roles: ['sadmin', 'editor'] // you can set roles in root nav
-                },
-
-            }
-        ]
-    },
-
-    {
-        path: '/printReport',
-        component: Layout,
-        // redirect: '/school_dashboard/form_4',
-        meta: {
-            title: 'Print Report Cards',
-            icon: 'clipboard',
-            roles: ['sadmin', 'editor'] // you can set roles in root nav
-        },
-        children: [{
-                path: 'multipleReport',
-                component: () =>
-                    import ('@/views/reportCard/multipleReport'),
-                name: 'multipleReport',
-                meta: {
-                    title: 'Class Report Cards',
-                    icon: 'clipboard',
-                    roles: ['sadmin', 'editor'] // you can set roles in root nav
-                },
-
-            },
-            {
-                path: 'singleReport',
-                component: () =>
-                    import ('@/views/reportCard/singleReport'),
-                name: 'singleReport',
-                meta: {
-                    title: 'Individual Report Card',
-                    icon: 'clipboard',
-                    roles: ['sadmin', 'editor'] // you can set roles in root nav
-                },
-
-            }
-        ]
-    },
-
-    {
-        path: '/mpesa',
-        component: Layout,
-        redirect: 'mpesa',
-        children: [{
-            path: 'mpesa',
-            component: () =>
-                import ('@/views/payments/mpesa'),
-            name: 'mpesa',
-            meta: {
-                title: 'Pay For Text',
-                icon: 'money',
-                roles: ['sadmin', 'editor']
-            }
-        }]
-    },
-
-    {
-        path: '/passwordReset',
-        component: Layout,
-        redirect: 'passwordReset',
-        children: [{
-            path: 'passwordReset',
-            component: () =>
-                import ('@/views/pass/passwordReset'),
-            name: 'passwordReset',
-            meta: {
-                title: 'Change Password',
-                icon: 'password',
-                affix: false
-            }
-        }]
-    },
+    // {
+    //     path: '/passwordReset',
+    //     component: Layout,
+    //     redirect: 'passwordReset',
+    //     children: [{
+    //         path: 'passwordReset',
+    //         component: () =>
+    //             import ('@/views/pass/passwordReset'),
+    //         name: 'passwordReset',
+    //         meta: {
+    //             title: 'Change Password',
+    //             icon: 'password',
+    //             affix: false
+    //         }
+    //     }]
+    // },
 
 
     // {
@@ -478,7 +571,7 @@ export const asyncRoutes = [
     //     }]
     // },
 
-    /** when your routing map is too long, you can split it into small modules **/
+    // /** when your routing map is too long, you can split it into small modules **/
     // componentsRouter,
     // chartsRouter,
     // nestedRouter,
