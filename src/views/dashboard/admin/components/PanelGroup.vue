@@ -1,54 +1,55 @@
 <template>
   <el-row :gutter="40" class="panel-group">
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
+      <div class="card-panel">
         <div class="card-panel-icon-wrapper icon-people">
           <svg-icon icon-class="peoples" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            New Visits
+            Clients
           </div>
-          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val='client_count' :duration="2600" class="card-panel-num" />
         </div>
+        
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('messages')">
         <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="message" class-name="card-panel-icon" />
+          <svg-icon icon-class="form" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Messages
+            Matters
           </div>
-          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val='matter_count' :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('purchases')">
         <div class="card-panel-icon-wrapper icon-money">
-          <svg-icon icon-class="money" class-name="card-panel-icon" />
+          <svg-icon icon-class="edit" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Purchases
+            My Tasks
           </div>
-          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />
+          <count-to :start-val="0" :end-val='task_count' :duration="3200" class="card-panel-num" />
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('shoppings')">
         <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="shopping" class-name="card-panel-icon" />
+          <svg-icon icon-class="user" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Shoppings
+            User Accounts
           </div>
-          <count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val='user_count' :duration="3600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -62,9 +63,49 @@ export default {
   components: {
     CountTo
   },
+  data() {
+    return {
+      list: null,
+      client_count: null,
+      matter_count: null,
+      task_count: null,
+      user_count: null
+    }
+  },
+  created() {
+    
+    this.getList()
+    
+  },
   methods: {
     handleSetLineChartData(type) {
+      
       this.$emit('handleSetLineChartData', type)
+    },
+    getList() {
+      this.$store.dispatch('user/fetchDash').then(response => {
+
+        this.client_count = response.client_count
+        this.matter_count = response.matter_count
+        this.task_count = response.task_count
+        this.user_count = response.user_count
+        // const list = this.list
+        // this.client_name = list.id
+        console.log(this.client_count)
+
+        // setTimeout(() => {
+        //   this.listLoading = false
+        // }, 1.5 * 1000)
+        // this.total = response.length
+
+        // Just to simulate the time of the request
+        // setTimeout(() => {
+        //   this.fullscreenLoading = false
+        //   this.$nextTick(() => {
+        //     window.print()
+        //   })
+        // }, 3000)
+      })
     }
   }
 }
@@ -81,7 +122,7 @@ export default {
     cursor: pointer;
     font-size: 12px;
     position: relative;
-    overflow: hidden;
+    // overflow: hidden;
     color: #666;
     background: #fff;
     box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
